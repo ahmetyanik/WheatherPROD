@@ -11,12 +11,12 @@ steps:
 - task: Checkout@1
   displayName: 'Checkout Wheather Repo'
   inputs:
-    repository: 'https://github.com/ahmetyanik/Weather'  # Wheather repo'nun linki
+    repository: 'git@github.com:ahmetyanik/Weather.git'  # Wheather repo'nun linki
 
 # 2. WeatherPROD repo'sunu çekiyoruz
 - script: |
-    git clone https://github.com/ahmetyanik/WheatherPROD.git
-    cd WeatherPROD
+    git clone git@github.com:ahmetyanik/WheatherPROD.git  # SSH ile bağlantı
+    cd WheatherPROD
     git checkout main  # Ana branch
     git pull origin main  # En son değişiklikleri alıyoruz
     cp -r ../Wheather/* .  # Wheather repo'sundaki tüm değişiklikleri alıyoruz

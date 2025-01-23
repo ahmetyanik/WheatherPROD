@@ -1,36 +1,24 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
 trigger:
-  branches:
-    include:
-      - main  # veya master, hangi branşı kullanıyorsanız
+- main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: ubuntu-latest
 
 steps:
-# 1. Wheather reposunu çekiyoruz
-- task: Checkout@1
-  displayName: 'Checkout Wheather Repo'
+- task: NodeTool@0
   inputs:
-    repository: 'git@github.com:ahmetyanik/Weather.git'  # Wheather repo'nun linki
+    versionSpec: '16.x'
+  displayName: 'Set up Node.js'
 
-# 2. WeatherPROD repo'sunu çekiyoruz
 - script: |
-    git clone git@github.com:ahmetyanik/WheatherPROD.git  # SSH ile bağlantı
-    cd WheatherPROD
-    git checkout main  # Ana branch
-    git pull origin main  # En son değişiklikleri alıyoruz
-    cp -r ../Wheather/* .  # Wheather repo'sundaki tüm değişiklikleri alıyoruz
-    git add .  # Değişiklikleri ekliyoruz
-    git commit -m "Update WeatherPROD from Wheather repo"  # Değişiklik mesajı
-    git push origin main  # Değişiklikleri WeatherPROD repo'suna gönderiyoruz
-  displayName: 'Update WeatherPROD from Wheather Repo'
-
-# 3. Son olarak, değişiklikleri yayınlıyoruz (bu adımı ihtiyaca göre değiştirebilirsiniz)
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-  displayName: 'Publish build artifacts'
-
+    npm config set openssl-legacy-provider true
+    npm install
+    npm run build
+  displayName: 'Install dependencies and build React app'
 
 

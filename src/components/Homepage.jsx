@@ -2,6 +2,9 @@ import React from "react";
 import Searchbox from "./Searchbox";
 
 function Homepage() {
+
+  console.log("GALATASARAY");
+
   return (
     <div
       className="homepage"

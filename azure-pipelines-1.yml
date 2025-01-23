@@ -1,0 +1,33 @@
+trigger:
+  branches:
+    include:
+      - main  # veya master, hangi branşı kullanıyorsanız
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+# 1. Wheather reposunu çekiyoruz (SSH ile)
+- task: Checkout@1
+  displayName: 'Checkout Wheather Repo'
+  inputs:
+    repository: 'git@github.com:ahmetyanik/Weather.git'  # SSH ile bağlantı
+
+# 2. WeatherPROD repo'sunu çekiyoruz (SSH ile)
+- script: |
+    git clone git@github.com:ahmetyanik/WheatherPROD.git  # SSH ile bağlantı
+    cd WeatherPROD
+    git checkout main  # Ana branch
+    git pull origin main  # En son değişiklikleri alıyoruz
+    cp -r ../Wheather/* .  # Wheather repo'sundaki tüm değişiklikleri alıyoruz
+    git add .  # Değişiklikleri ekliyoruz
+    git commit -m "Update WeatherPROD from Wheather repo"  # Değişiklik mesajı
+    git push origin main  # Değişiklikleri WeatherPROD repo'suna gönderiyoruz
+  displayName: 'Update WeatherPROD from Wheather Repo'
+
+# 3. Son olarak, değişiklikleri yayınlıyoruz (bu adımı ihtiyaca göre değiştirebilirsiniz)
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+  displayName: 'Publish build artifacts'

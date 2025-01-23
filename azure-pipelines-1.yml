@@ -7,16 +7,16 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-# 1. Wheather reposunu çekiyoruz
+# 1. Wheather reposunu çekiyoruz (SSH ile)
 - task: Checkout@1
   displayName: 'Checkout Wheather Repo'
   inputs:
-    repository: 'git@github.com:ahmetyanik/Weather.git'  # Wheather repo'nun linki
+    repository: 'git@github.com:ahmetyanik/Weather.git'  # SSH ile bağlantı
 
-# 2. WeatherPROD repo'sunu çekiyoruz
+# 2. WeatherPROD repo'sunu çekiyoruz (SSH ile)
 - script: |
     git clone git@github.com:ahmetyanik/WheatherPROD.git  # SSH ile bağlantı
-    cd WheatherPROD
+    cd WeatherPROD
     git checkout main  # Ana branch
     git pull origin main  # En son değişiklikleri alıyoruz
     cp -r ../Wheather/* .  # Wheather repo'sundaki tüm değişiklikleri alıyoruz
@@ -31,6 +31,3 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
   displayName: 'Publish build artifacts'
-
-
-

@@ -1,27 +1,22 @@
-trigger: none  # Bu pipeline sadece manuel ya da başka bir pipeline tarafından tetiklenir
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
-resources:
-  pipelines:
-    - pipeline: WeatherPipeline
-      source: Weather  # Weather pipeline adını buraya yazın
-      trigger: true
+trigger:
+- main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: ubuntu-latest
 
 steps:
-- download: current
-  artifact: sync-files
-
-- task: Checkout@1
+- task: NodeTool@0
   inputs:
-    repository: 'self'
-    persistCredentials: true
+    versionSpec: '16.x'
+  displayName: 'Set up Node.js'
 
 - script: |
-    echo "Applying changes to WeatherPROD"
-    cp -r $(Pipeline.Workspace)/sync-files/* .
-    git add .
-    git commit -m "Sync from Weather repository"
-    git push
-  displayName: 'Sync Changes to WeatherPROD'
+    npm config set openssl-legacy-provider true
+    npm install
+    npm run build
+  displayName: 'Install dependencies and build React app'
